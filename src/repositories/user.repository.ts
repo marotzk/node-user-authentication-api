@@ -81,6 +81,23 @@ class UserRepository {
       throw new DatabaseError('Erro ao deletar usuário', err);
     }
   }
+
+  async findByEmailAndPassword(email: string, password: string): Promise<User | null> {
+    try {
+      const query =`
+      SELECT uuid, email FROM application_user 
+      WHERE email = $1 
+      AND password = crypt($2, $3)
+      `;
+      const values = [email, password, process.env.CRYPT];
+      const { rows } = await db.query(query, values);
+      const [user] = rows;
+      return user || null;
+
+    } catch (err) {
+      throw new DatabaseError('Erro na consulta por EMAIL e PASSWORD', err);
+    }
+  }
 }
 
 export default new UserRepository();
