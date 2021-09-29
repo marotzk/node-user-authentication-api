@@ -1,4 +1,5 @@
-import express, { Request, Response, NextFunction, urlencoded } from 'express';
+import express from 'express';
+import errorHandler from './middlewares/error-handler.middleware';
 import statusRouter from './routes/status.router';
 import userRoutes from './routes/users.router';
 
@@ -12,8 +13,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /** Configuraçao das rotas */
-app.use(statusRouter, userRoutes);
+app.use(statusRouter);
+app.use(userRoutes);
 
+/** Configuração dos Handlers de Erro */
+app.use(errorHandler);
 
 /** Configuraçao do servidor */
 app.listen(port, () => {
